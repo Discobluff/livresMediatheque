@@ -7,7 +7,8 @@
 </head>
 <body>
     {% for isbn in livres%}
-    <p>{{ isbn }}</p>
+    <p id = "{{isbn}}">{{ isbn }}</p>
+    <a href="/catalogue/supprimer/{{isbn}}"><button>Supprimer</button></a>
     {% endfor %}
 </body>
 </html>

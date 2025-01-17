@@ -4,6 +4,7 @@ from flask import Flask
 # Controleurs
 from accueil.accueil import accueilBp
 from catalogue.catalogue import catalogueBp
+from ajouter.ajouter import ajouterBp
 
 # initialisation de l'app
 def appInit():
@@ -12,6 +13,7 @@ def appInit():
 
     app.register_blueprint(accueilBp)
     app.register_blueprint(catalogueBp)
+    app.register_blueprint(ajouterBp)
 
     return app
 
