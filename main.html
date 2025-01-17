@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Scanner Code-Barres avec QuaggaJS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+</head>
+<body>
+  <h1>Scanner Code-Barres</h1>
+  <div id="scanner-container"></div>
+  <div id="result">Le code scanné apparaîtra ici.</div>
+
+  <script>
+    // Configurer QuaggaJS
+    Quagga.init({
+      inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: document.querySelector('#scanner-container'),
+        constraints: {
+          width: 640,
+          height: 480,
+          facingMode: "environment"
+        }
+      },
+      decoder: {
+        readers: ["ean_reader", "code_128_reader", "upc_reader", "upc_e_reader", "code_39_reader"]
+      },
+      locate: true, // Localiser le code-barres dans l'image
+      locator: {
+        patchSize: "medium",
+        halfSample: true
+      }
+    }, function(err) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      Quagga.start();
+    });
+
+    // Détecter un code-barres scanné
+    Quagga.onDetected(function(result) {
+      document.getElementById('result').innerText = 'Code scanné : ' + result.codeResult.code;7
+      console.log(result.codeResult.code);
+    });
+  </script>
+</body>
+</html>

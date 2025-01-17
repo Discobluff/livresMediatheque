@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner de Code-Barres ISBN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        #scanner-container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            position: relative;
+        }
+        #scanner {
+            width: 100%;
+            height: auto;
+            border: 2px solid #000;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="scanner-container">
+        <div id="scanner"></div>
+        <div id="result">Scannez un code-barres ISBN...</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const resultElement = document.getElementById('result');
+
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.getElementById("scanner"),
+                    constraints: {
+                        facingMode: "environment", // Caméra arrière
+                        width: 640,
+                        height: 480
+                    }
+                },
+                decoder: {
+                    readers: ["ean_reader"] // Priorise uniquement EAN-13
+                },
+                locator: {
+                    halfSample: false,
+                    patchSize: "large", // Pour ISBN, les patchs plus larges peuvent être nécessaires
+                    debug: {
+                        showCanvas: true
+                    }
+                },
+                locate: true
+            }, (err) => {
+                if (err) {
+                    console.error(err);
+                    resultElement.textContent = "Erreur lors de l'initialisation.";
+                    return;
+                }
+                Quagga.start();
+            });
+
+            Quagga.onDetected((data) => {
+                const isbn = data.codeResult.code;
+
+                // Vérifie si le code détecté est un ISBN valide
+                if (isbn.length === 13 && isbn.startsWith("978")) {
+                    resultElement.textContent = `ISBN détecté : ${isbn}`;
+                } else {
+                    resultElement.textContent = `Code détecté : ${isbn} (pas un ISBN valide)`;
+                }
+
+                // Arrête temporairement pour éviter les doublons
+                Quagga.stop();
+                setTimeout(() => Quagga.start(), 3000); // Redémarre après 3 secondes
+            });
+
+            Quagga.onProcessed((result) => {
+                if (result) {
+                    const canvas = Quagga.canvas.dom.overlay;
+                    const ctx = Quagga.canvas.ctx.overlay;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    if (result.boxes) {
+                        result.boxes.forEach((box) => {
+                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, ctx, {
+                                color: "green",
+                                lineWidth: 2
+                            });
+                        });
+                    }
+
+                    if (result.box) {
+                        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, ctx, {
+                            color: "blue",
+                            lineWidth: 2
+                        });
+                    }
+
+                    if (result.codeResult && result.codeResult.code) {
+                        Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, ctx, {
+                            color: "red",
+                            lineWidth: 3
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
