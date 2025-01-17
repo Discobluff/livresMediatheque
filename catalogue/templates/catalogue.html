@@ -4,11 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 </head>
 <body>
-    {% for isbn in livres%}
-    <p id = "{{isbn}}">{{ isbn }}</p>
-    <a href="/catalogue/supprimer/{{isbn}}"><button>Supprimer</button></a>
+    <div class="header">
+        <a href="/">Accueil</a>
+    </div>
+    <div class="searchBar">
+        <form action="/catalogue/rechercher" method="POST">
+            <input type="text" id="searchBook" name="searchBook" placeholder="Rechercher un livre...">
+            <input type="text" id="searchAuthor" name="searchAuthor" placeholder="Rechercher un auteur...">
+            <button type="submit">Rechercher</button>
+        </form>        
+    </div>
+    <ul>
+    {% for livre in livres%}
+    <li>
+    <div class="livre">
+    <p id="{{livre[0]}}">{{ livre[1] }}</p>
+    <button onclick="window.location.href='/catalogue/supprimer/{{livre[0]}}'">Supprimer</button>
+    </div></li>
     {% endfor %}
+</ul>
 </body>
 </html>

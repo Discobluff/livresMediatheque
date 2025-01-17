@@ -3,28 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner de Code-Barres ISBN</title>
+    <title>Scanner un livre</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <style>
-        #scanner-container {
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-            position: relative;
-        }
-        #scanner {
-            width: 100%;
-            height: auto;
-            border: 2px solid #000;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 1.5em;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="header">
+        <a href="/">Accueil</a>
+    </div>
     <div id="scanner-container">
         <div id="scanner"></div>
         <div id="result">Scannez un code-barres ISBN...</div>
@@ -82,15 +69,17 @@
                         if (response.ok) {
                             window.location.href = `/`;
                         } else {
-                            resultElement.textContent = "Erreur lors de l'ajout du livre.";
+                            resultElement.textContent = "Le livre existe déjà dans la base de données.";
+                            resultElement.style.color = "red";
                         }
                     })
                     .catch(error => {
                         console.error('Erreur:', error);
-                        resultElement.textContent = "Erreur lors de l'ajout du livre.";
+                        resultElement.textContent = "Le livre existe déjà dans la base de données.";
                     });
                 } else {
                     resultElement.textContent = `Code détecté : ${isbn} (pas un ISBN valide)`;
+                    Quagga.init();
                 }
 
                 // Arrête temporairement pour éviter les doublons
@@ -98,36 +87,7 @@
                 setTimeout(() => Quagga.start(), 3000); // Redémarre après 3 secondes
             });
 
-            Quagga.onProcessed((result) => {
-                if (result) {
-                    const canvas = Quagga.canvas.dom.overlay;
-                    const ctx = Quagga.canvas.ctx.overlay;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    if (result.boxes) {
-                        result.boxes.forEach((box) => {
-                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, ctx, {
-                                color: "green",
-                                lineWidth: 2
-                            });
-                        });
-                    }
-
-                    if (result.box) {
-                        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, ctx, {
-                            color: "blue",
-                            lineWidth: 2
-                        });
-                    }
-
-                    if (result.codeResult && result.codeResult.code) {
-                        Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, ctx, {
-                            color: "red",
-                            lineWidth: 3
-                        });
-                    }
-                }
-            });
+            
         });
     </script>
 </body>
