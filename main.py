@@ -4,6 +4,9 @@ import re
 import base64
 
 http = httplib2.Http()
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
 
 # Clé API Google Books
 api_key = "AIzaSyCahFEnMNv3luknZLZ6dGYLcC901zGD5QE"
@@ -19,7 +22,7 @@ def getData(isbn, returnImage=False):
     # url = "https://api2.isbndb.com/book/9782258152793"
     url = f"https://isbndb.com/book/{isbn}"
     # Envoi de la requête GET
-    response, content = http.request(url, 'GET')        
+    response, content = http.request(url, 'GET',headers=headers)        
     if response['status'] == '200':
         image=""
         if returnImage:
