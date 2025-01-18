@@ -19,7 +19,7 @@ def appInit():
 
     return app
 
+app = appInit()
 # execution
 if __name__ == '__main__':
-    app = appInit()
     app.run(debug=True)
