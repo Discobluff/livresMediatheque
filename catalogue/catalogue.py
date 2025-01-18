@@ -34,9 +34,8 @@ def chercher():
         cursor.execute('SELECT id FROM Auteur WHERE nom LIKE ? OR prenom LIKE ?',(split[0]+"%",split[0]+"%"))
         ids = cursor.fetchall()
         ids = [id[0] for id in ids]
-    if len(split)==2:
-        cursor.execute('SELECT id FROM Auteur WHERE (nom LIKE ? AND prenom LIKE ?) OR (nom LIKE ? AND prenom LIKE ?)',(split[1]+"%",split[0]+"%",split[0]+"%",split[1]+"%"))
-        # cursor.execute('SELECT * FROM Livre WHERE (? OR titre LIKE ?) AND (? OR (prenom LIKE ? OR nom LIKE ?))',(livre=="",livre+"%",auteur=="",split[0]+"%",split[0]+"%"))
+    else:
+        cursor.execute('SELECT id FROM Auteur WHERE (nom LIKE ? AND prenom LIKE ?) OR (nom LIKE ? AND prenom LIKE ?) OR (nom LIKE ?)',(split[1]+"%",split[0]+"%",split[0]+"%",split[1]+"%"," ".join(split)+"%"))
         ids = cursor.fetchall()
         ids = [id[0] for id in ids]    
     placeholders = ",".join("?" for _ in ids)    

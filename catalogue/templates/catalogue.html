@@ -22,7 +22,7 @@
     {% for livre in livres%}
     <li>
     <div class="livre">
-    <p id="{{livre[0]}}">{{ livre[1] }}</p>
+    <a id="{{livre[0]}}" href="/livre/{{livre[0]}}">{{livre[1]}}</a>
     <button onclick="window.location.href='/catalogue/supprimer/{{livre[0]}}'">Supprimer</button>
     </div></li>
     {% endfor %}

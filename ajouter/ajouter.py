@@ -13,10 +13,16 @@ def ajouterISBN():
     data = request.json
     isbn = data['isbn']
     print(isbn)
-    title, author = getData(isbn)
+    title, author,_ = getData(isbn)
     split = author.split(' ')
-    prenom = split[0]
-    nom = split[1]
+    if len(split) == 1:
+        prenom = ""
+        nom = split[0]
+    else:
+        prenom = split[0]
+        nom = " ".join(split[1:])
+    # prenom = split[0]
+    # nom = split[1]
     connection=connect('livres.db', check_same_thread=False)
     cursor=connection.cursor()
     cursor.execute('SELECT id FROM Auteur WHERE nom=? AND prenom=?',(nom,prenom))

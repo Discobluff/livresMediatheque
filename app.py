@@ -5,6 +5,7 @@ from flask import Flask
 from accueil.accueil import accueilBp
 from catalogue.catalogue import catalogueBp
 from ajouter.ajouter import ajouterBp
+from livre.livre import livreBp
 
 # initialisation de l'app
 def appInit():
@@ -14,6 +15,7 @@ def appInit():
     app.register_blueprint(accueilBp)
     app.register_blueprint(catalogueBp)
     app.register_blueprint(ajouterBp)
+    app.register_blueprint(livreBp)
 
     return app
 
