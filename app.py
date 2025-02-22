@@ -2,10 +2,10 @@
 from flask import Flask
 
 #Solution for Pydroid running on Android
-import os
-import sys
-os.chdir("./Pydroid")
-sys.path.append(os.getcwd())
+# import os
+# import sys
+# os.chdir("./Pydroid")
+# sys.path.append(os.getcwd())
 
 # Controleurs
 from accueil.accueil import accueilBp
