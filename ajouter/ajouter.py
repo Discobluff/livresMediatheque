@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request
+from flask import Blueprint, render_template,request,jsonify
 from sqlite3 import connect,IntegrityError
 from main import *
 
@@ -21,8 +21,6 @@ def ajouterISBN():
     else:
         prenom = split[0]
         nom = " ".join(split[1:])
-    # prenom = split[0]
-    # nom = split[1]
     connection=connect('livres.db', check_same_thread=False)
     cursor=connection.cursor()
     cursor.execute('SELECT id FROM Auteur WHERE nom=? AND prenom=?',(nom,prenom))
@@ -35,13 +33,8 @@ def ajouterISBN():
     try:
         cursor.execute('INSERT INTO Livre VALUES(?,?,?)',(isbn,title,id))
         connection.commit()
-    # except IntegrityError:
-    #     print("snif")
-    #     raise "Already exists"
     except:
-    #     print("ui")
         connection.close()
         raise Exception()
-    #     pass
     connection.close()
-    return "Added successfully"
+    return jsonify({"title":title,"author":author})

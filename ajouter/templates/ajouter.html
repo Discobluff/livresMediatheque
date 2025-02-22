@@ -11,16 +11,48 @@
 <body>
     <div class="header">
         <a href="/">Accueil</a>
+        <a href="/ajouter">Ajouter</a>
+        <a href="/catalogue">Catalogue</a>
     </div>
-    <div id="scanner-container">
-        <div id="scanner"></div>
-        <div id="result">Scannez un code-barres ISBN...</div>
-    </div>
-
+    <!-- <form action="/ajouter" method="post"> -->
+        <input placeholder="Numéro ISBN (13 caractères)" name="isbn" id="isbn">
+        <button onclick="addBook()">Ajouter le livre</button>
+    <!-- </form> -->
+    <div class="result"id="result">Scannez un code-barres ISBN...</div>
+    <p>OU</p>
+    <div id="scanner"></div>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const resultElement = document.getElementById('result');
+        function addBook(){
+            const isbn = document.getElementById('isbn').value;
+            fetch(`/ajouter`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ isbn: isbn })
+            })
+            .then(response => {
+                if (response.ok) {                    
+                    document.getElementById('result').textContent = "Le livre a été ajouté avec succès.";
+                    document.getElementById('result').style.color = "#8be25c";
+                    return response.json();
+                } else {
+                    document.getElementById('result').textContent = "Le livre existe déjà dans la base de données.";
+                    document.getElementById('result').style.color = "red";
+                }
+            })
+            .then(data => {                
+                document.getElementById('result').textContent = "Le livre a été ajouté avec succès. "+data.title+" de "+data.author;
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.getElementById('result').textContent = "Le livre existe déjà dans la base de données.";
+            });
+        }
 
+        document.addEventListener("DOMContentLoaded", () => {launchScan();});
+        function launchScan(){
+            const resultElement = document.getElementById('result');
             Quagga.init({
                 inputStream: {
                     name: "Live",
@@ -28,8 +60,8 @@
                     target: document.getElementById("scanner"),
                     constraints: {
                         facingMode: "environment", // Caméra arrière
-                        width: 640,
-                        height: 480
+                        width: window.innerWidth,
+                        height: window.innerHeight/2
                     }
                 },
                 decoder: {
@@ -58,25 +90,28 @@
                 // Vérifie si le code détecté est un ISBN valide
                 if (isbn.length === 13 && isbn.startsWith("978")) {
                     resultElement.textContent = `ISBN détecté : ${isbn}`;
-                    fetch(`/ajouter`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ isbn: isbn })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.href = `/`;
-                        } else {
-                            resultElement.textContent = "Le livre existe déjà dans la base de données.";
-                            resultElement.style.color = "red";
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        resultElement.textContent = "Le livre existe déjà dans la base de données.";
-                    });
+                    document.getElementById('isbn').value = isbn;
+                    addBook();
+                    // fetch(`/ajouter`, {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json'
+                    //     },
+                    //     body: JSON.stringify({ isbn: isbn })
+                    // })
+                    // .then(response => {
+                    //     if (response.ok) {
+                    //         resultElement.textContent = "Le livre a été ajouté avec succès.";
+                    //         resultElement.style.color = "#8be25c";
+                    //     } else {
+                    //         resultElement.textContent = "Le livre existe déjà dans la base de données.";
+                    //         resultElement.style.color = "red";
+                    //     }
+                    // })
+                    // .catch(error => {
+                    //     console.error('Erreur:', error);
+                    //     resultElement.textContent = "Le livre existe déjà dans la base de données.";
+                    // });
                 } else {
                     resultElement.textContent = `Code détecté : ${isbn} (pas un ISBN valide)`;
                     Quagga.init();
@@ -84,11 +119,11 @@
 
                 // Arrête temporairement pour éviter les doublons
                 Quagga.stop();
-                setTimeout(() => Quagga.start(), 3000); // Redémarre après 3 secondes
+                setTimeout(() => launchScan(), 1000); // Redémarre après 1 seconde
             });
 
             
-        });
+        };
     </script>
 </body>
 </html>
