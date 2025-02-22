@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request,jsonify
-from sqlite3 import connect,IntegrityError
+from sqlite3 import connect
 from main import *
 
 ajouterBp = Blueprint('ajouter', __name__,template_folder='templates')

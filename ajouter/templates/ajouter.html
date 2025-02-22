@@ -24,6 +24,11 @@
     <script>
         function addBook(){
             const isbn = document.getElementById('isbn').value;
+            if (isbn.length != 13 || (!isbn.startsWith("978") && !isbn.startsWith("979"))){
+                document.getElementById('result').textContent = "Le code ISBN doit contenir 13 caractères et commencer par 978 ou 979.";
+                document.getElementById('result').style.color = "red";
+                return;
+            }
             fetch(`/ajouter`, {
                 method: 'POST',
                 headers: {
@@ -88,30 +93,10 @@
                 const isbn = data.codeResult.code;
 
                 // Vérifie si le code détecté est un ISBN valide
-                if (isbn.length === 13 && isbn.startsWith("978")) {
+                if (isbn.length === 13 && (isbn.startsWith("978") || isbn.startsWith("979"))) {
                     resultElement.textContent = `ISBN détecté : ${isbn}`;
                     document.getElementById('isbn').value = isbn;
                     addBook();
-                    // fetch(`/ajouter`, {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Content-Type': 'application/json'
-                    //     },
-                    //     body: JSON.stringify({ isbn: isbn })
-                    // })
-                    // .then(response => {
-                    //     if (response.ok) {
-                    //         resultElement.textContent = "Le livre a été ajouté avec succès.";
-                    //         resultElement.style.color = "#8be25c";
-                    //     } else {
-                    //         resultElement.textContent = "Le livre existe déjà dans la base de données.";
-                    //         resultElement.style.color = "red";
-                    //     }
-                    // })
-                    // .catch(error => {
-                    //     console.error('Erreur:', error);
-                    //     resultElement.textContent = "Le livre existe déjà dans la base de données.";
-                    // });
                 } else {
                     resultElement.textContent = `Code détecté : ${isbn} (pas un ISBN valide)`;
                     Quagga.init();
