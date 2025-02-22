@@ -1,5 +1,4 @@
 import httplib2
-import json
 import re
 import base64
 
