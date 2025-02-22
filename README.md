@@ -57,7 +57,7 @@ Pour accéder à la page permettant de consulter la liste des livres de la base 
 
 ![Catalogue](images/catalogue2.png)
 
-Par défaut tous les livres sont affichés, mais on peut rechercher un ou plusieurs livres par titre, auteur, ou les deux
+Par défaut tous les livres sont affichés, mais on peut rechercher un ou plusieurs livres par titre, auteur, ou les deux.
 
 ![Recherche](images/recherche.png)
 
