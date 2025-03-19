@@ -39,7 +39,7 @@ def chercher():
         ids = cursor.fetchall()
         ids = [id[0] for id in ids]    
     placeholders = ",".join("?" for _ in ids)    
-    cursor.execute(f"SELECT * FROM Livre WHERE titre LIKE ? AND (? OR auteur IN ({placeholders}))",(livre+"%",auteur=="")+tuple(ids))
+    cursor.execute(f"SELECT * FROM Livre WHERE titre LIKE ? AND (? OR auteur IN ({placeholders}))",("%"+livre+"%",auteur=="")+tuple(ids))
     livres = cursor.fetchall()
     connection.commit()
     connection.close()
