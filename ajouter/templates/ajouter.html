@@ -14,16 +14,15 @@
         <a href="/ajouter">Ajouter</a>
         <a href="/catalogue">Catalogue</a>
     </div>
-    <!-- <form action="/ajouter" method="post"> -->
         <input placeholder="Numéro ISBN (13 caractères)" name="isbn" id="isbn">
         <button onclick="addBook()">Ajouter le livre</button>
-    <!-- </form> -->
     <div class="result"id="result">Scannez un code-barres ISBN...</div>
     <p>OU</p>
     <div id="scanner"></div>
     <script>
         function addBook(){
             const isbn = document.getElementById('isbn').value;
+            document.getElementById('isbn').value = "";
             if (isbn.length != 13 || (!isbn.startsWith("978") && !isbn.startsWith("979"))){
                 document.getElementById('result').textContent = "Le code ISBN doit contenir 13 caractères et commencer par 978 ou 979.";
                 document.getElementById('result').style.color = "red";

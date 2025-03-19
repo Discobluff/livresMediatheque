@@ -23,7 +23,7 @@ def getData(isbn, returnImage=False):
                     encoded_string = base64.b64encode(c).decode('utf-8')
                     image = encoded_string
         content = content.split(b"<table")[1].split(b"</table>")[0]
-        title = content.split(b"<td>")[1].split(b"</td>")[0].decode("utf-8")          
+        title = content.split(b"<td>")[1].split(b"</td>")[0].decode("utf-8")
         author = content.split(b"<td>")[4].split(b"</td>")[0].split(b">")[1].split(b"<")[0].decode("utf-8")
         return title.replace("(French Edition)","").replace("&#039;","'"),author,image
     else:
