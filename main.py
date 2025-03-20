@@ -24,7 +24,10 @@ def getData(isbn, returnImage=False):
                     image = encoded_string
         content = content.split(b"<table")[1].split(b"</table>")[0]
         title = content.split(b"<td>")[1].split(b"</td>")[0].decode("utf-8")
-        author = content.split(b"<td>")[4].split(b"</td>")[0].split(b">")[1].split(b"<")[0].decode("utf-8")
+        try:
+            author = content.split(b"<td>")[4].split(b"</td>")[0].split(b">")[1].split(b"<")[0].decode("utf-8")
+        except:
+            author = content.split(b"<td>")[5].split(b"</td>")[0].split(b">")[1].split(b"<")[0].decode("utf-8")
         return title.replace("(French Edition)","").replace("&#039;","'"),author,image
     else:
         print("Erreur : Statut de la réponse :", response['status'])
